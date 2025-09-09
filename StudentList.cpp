@@ -2,7 +2,7 @@
   This program serves as a database for students. The user may add and remove students, as
   well as see the complete list of students they've entered. Each student has a first and last
   name, as well as an ID number and a GPA (0.0-5.0).
-  
+  git 
   Author: Luca Ardanaz
   Last Updated: 9/9/2025
  */
@@ -153,6 +153,7 @@ void removeStudent(vector<Student*> &s) {
   }
 }
 
+//this clears all errors with cin so that cin always works as expected.
 void cinReset() {
   cin.clear();
   cin.ignore(10000, '\n');

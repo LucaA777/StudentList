@@ -1,6 +1,16 @@
+/*
+  This program serves as a database for students. The user may add and remove students, as
+  well as see the complete list of students they've entered. Each student has a first and last
+  name, as well as an ID number and a GPA (0.0-5.0).
+  
+  Author: Luca Ardanaz
+  Last Updated: 9/9/2025
+ */
+
 #include <iostream>
 #include <cstring>
 #include <vector>
+#include <cmath>
 
 using namespace std;
 
@@ -14,19 +24,20 @@ struct Student {
 void addStudent(vector<Student*> &s);
 void printStudents(vector<Student*> s);
 void removeStudent(vector<Student*> &s);
+void cinReset();
 
 int main() {
 
   vector<Student*> students;
   char input[20];
 
-  //This will run until the user enters "QUIT"
+  //This loop will run until the user enters "QUIT"
   do {
     //ask for user input
-    cout << endl << "Enter command (type \"HELP\" for all commands):" << endl; 
+    cout << endl << endl << endl << "Enter command (type \"HELP\" for all commands):" << endl; 
     cin.get(input, 20);
-    cin.clear();
-    cin.ignore(10000, '\n');
+    cinReset();
+    
     cout << endl;
     
     if (strcmp(input, "HELP") == 0) {
@@ -52,7 +63,7 @@ int main() {
     
   } while (strcmp(input, "QUIT") != 0);
   
-  
+  cout << "Ending program." << endl;
   
 
   return 0;
@@ -60,11 +71,14 @@ int main() {
 
 void addStudent(vector<Student*> &s) {
   Student* sPtr = new Student();
+
+  //asks for first name
   cout <<"Adding a new student..." << endl;
   cout << "Enter first name:" << endl;
   cin.get((*sPtr).firstName, 20);
   cin.get();
 
+  //asks for last name
   cout << "Enter last name:" << endl;
   cin.get((*sPtr).lastName, 20);
   cin.get();
@@ -72,49 +86,61 @@ void addStudent(vector<Student*> &s) {
   //gets student id and verifies that its valid
   do {
     if (cin.fail()) {
-      cin.clear();
-      cin.ignore(10000, '\n');
+      cinReset();
+      
     }
     cout << "Enter student ID:" << endl;
     cin >> (*sPtr).ID;
   } while (cin.fail() || (*sPtr).ID <= 0);
 
-  
+
+  //gets student GPA and verifies its valid
   do {
     if (cin.fail()) {
-      cin.clear();
-      cin.ignore(10000, '\n');
+      cinReset();
+      
     }
     cout << "Enter GPA:" << endl;
     cin >> (*sPtr).GPA;
-  } while (cin.fail() || (*sPtr).GPA < 0 || (*sPtr).GPA > 4.5);
+  } while (cin.fail() || (*sPtr).GPA < 0 || (*sPtr).GPA > 5.0);
 
-  cin.clear();
-  cin.ignore(10000, '\n');
-  
+  cinReset();
+ 
+  //adds student to vector of student pointers
   s.push_back(sPtr);
 }
 
 void printStudents(vector<Student*> s) {
-  cout << "Complete list of students:" << endl;
-
-  //prints out each student's complete information
-  for (int i = 0; i < s.size(); i++) {
-    cout << s.at(i) -> firstName << " " << s.at(i) -> lastName << ", " << s.at(i) -> ID << ", " << s.at(i) -> GPA << endl;
+  
+  if (s.size() > 0) {
+    //prints out each student's complete information
+    for (int i = 0; i < s.size(); i++) {
+      cout << "Complete list of students:" << endl;
+      /*
+	The confusing looking logic with the modulos fixes the issue where numbers like 4.00 are displayed as 4.
+	Essentially it just adds the ".00" to 4 or similarly a "0" to 3.2. That way the precision always shows the same.
+      */
+      cout << s.at(i) -> firstName << " " << s.at(i) -> lastName << ", " << s.at(i) -> ID << ", " << round((s.at(i) -> GPA) * 100) / 100 << (int(round((s.at(i) -> GPA) * 100)) % 10 == 0 ? (int(round((s.at(i) -> GPA) * 100)) % 100 == 0 ? ".00" : "0") : "")<< endl;
+    }
+  }
+  else {
+    cout << "There are no students in the database." << endl;
   }
 }
 
 void removeStudent(vector<Student*> &s) {
   //asks for ID and saves it
+  //keeps asking till it gets an int
   int id = 0;
   do {
     if (cin.fail()) {
-      cin.clear();
-      cin.ignore(10000, '\n');
+      cinReset();
     }
     cout << "Enter the student ID of the student to remove:" << endl;
     cin >> id;
   } while (cin.fail());
+
+  cinReset();
 
   //removes ALL students who have that ID
   for (int i = 0; i < s.size(); i++) {
@@ -125,4 +151,9 @@ void removeStudent(vector<Student*> &s) {
       i--;
     }
   }
+}
+
+void cinReset() {
+  cin.clear();
+  cin.ignore(10000, '\n');
 }

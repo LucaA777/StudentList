@@ -113,9 +113,9 @@ void addStudent(vector<Student*> &s) {
 void printStudents(vector<Student*> s) {
   
   if (s.size() > 0) {
+    cout << "Complete list of students:" << endl;
     //prints out each student's complete information
     for (int i = 0; i < s.size(); i++) {
-      cout << "Complete list of students:" << endl;
       /*
 	The confusing looking logic with the modulos fixes the issue where numbers like 4.00 are displayed as 4.
 	Essentially it just adds the ".00" to 4 or similarly a "0" to 3.2. That way the precision always shows the same.
